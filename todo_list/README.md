@@ -5,6 +5,7 @@
   - [1.4. Marcar como Completada](#14-marcar-como-completada)
   - [1.5. Editar Tarea](#15-editar-tarea)
   - [1.6. Almacenamiento Local](#16-almacenamiento-local)
+- [Conclusiones](#conclusiones)
 
 # 1. Documentación de la Aplicación To-Do List en React
 ## 1.1. Estados y Funciones
@@ -101,3 +102,5 @@ useEffect(() => {
     }
 }, [todos]);
 ```
+# Conclusiones
+En esta practica  se ha aprendido a trabajar con el estado en React, manejar eventos y realizar operaciones de array como agregar, al igual de como se puede guardar los datos en lo que es el JSON, la practica fue algo corta en cuanto los contenidos, pero para realizado solo es de entender que hace cada componente y donde van, lo mas complicado se puede decir que fue el ubicar bien donde va cada seccion, el código proporciona una interfaz para agregar, editar, completar y eliminar tareas en una lista de tareas. Además, utiliza el almacenamiento local del navegador para persistir las tareas incluso después de recargar la página.
