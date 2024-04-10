@@ -14,7 +14,8 @@ body {
 
 #todo-list {
   width: 500px;
-  margin: 40px auto;
+  margin: 50px auto 0;
+  margin-bottom: 10px auto 0;
 }
 
 form,

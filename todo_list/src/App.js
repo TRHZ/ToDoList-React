@@ -1,25 +1,29 @@
-import React, {useState,useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import "./App.css";
+import { ThemeContext } from './theme-context'; // Importa el contexto del tema desde otro archivo
+
 const App = () => {
-  const [todos, setTodos] = useState([]);
-  const [todoEditing, setTodoEditing] = useState(null);
-  
+  const [todos, setTodos] = useState([]); // Estado para almacenar la lista de tareas
+  const [todoEditing, setTodoEditing] = useState(null); // Estado para el ID de la tarea que se está editando
+  const { theme, toggle, dark } = React.useContext(ThemeContext); // Obtiene el tema actual y la función de cambio de tema del contexto utilizando el hook useContext
+
+
   useEffect(() => {
-    const json = localStorage.getItem("todos");
-    const loadedTodos = JSON.parse(json);
+    const json = localStorage.getItem("todos"); // Obtiene las tareas del almacenamiento local
+    const loadedTodos = JSON.parse(json); // Convierte las tareas de formato JSON a un array de objetos
     if (loadedTodos) {
-      setTodos(loadedTodos);
+      setTodos(loadedTodos); // Establece las tareas cargadas en el estado local
     }
-  }, []);
+  }, []); // El array vacío como segundo argumento significa que este efecto solo se ejecuta una vez, al montar el componente
 
-useEffect(() => {
+
+  useEffect(() => {
     if(todos.length > 0) {
-        const json = JSON.stringify(todos);
-        localStorage.setItem("todos", json);
+        const json = JSON.stringify(todos); // Convierte las tareas a formato JSON
+        localStorage.setItem("todos", json); // Guarda las tareas en el almacenamiento local
     }
-  }, [todos]);
+  }, [todos]); // Se ejecuta cada vez que el estado de 'todos' cambia
 
-  // Add the handlesubmit code here
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -32,19 +36,16 @@ useEffect(() => {
     if (newTodo.text.length > 0 ) {
         setTodos([...todos].concat(newTodo));
     } else {
-
         alert("Enter Valid Task");
     }
     document.getElementById('todoAdd').value = ""
   }
   
-  // Add the deleteToDo code here
   function deleteTodo(id) {
     let updatedTodos = [...todos].filter((todo) => todo.id !== id);
     setTodos(updatedTodos);
   }
   
-  // Add the toggleComplete code here
   function toggleComplete(id) {
     let updatedTodos = [...todos].map((todo) => {
       if (todo.id === id) {
@@ -54,65 +55,72 @@ useEffect(() => {
     });
     setTodos(updatedTodos);
   }
-  
-  // Add the submitEdits code here
-function submitEdits(newtodo) {
+
+  function submitEdits(newtodo) {
     const updatedTodos = [...todos].map((todo) => {
       if (todo.id === newtodo.id) {
         todo.text = document.getElementById(newtodo.id).value;
-        }
-        return todo;
-      });
-      setTodos(updatedTodos);
-      setTodoEditing(null);
-    }
+      }
+      return todo;
+    });
+    setTodos(updatedTodos);
+    setTodoEditing(null);
+  }
   
-return(
-        <div id="todo-list">
-          <h1>ToDo List</h1>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              id = 'todoAdd'
-            />
-            <button type="submit">Add Todo</button>
-          </form>
+  return (
+    <div className="App" style={{ backgroundColor: theme.backgroundColor, color: theme.color }}>
+      <header className="App-header">
+        <button
+          type="button"
+          onClick={toggle}
+          style={{
+            backgroundColor: theme.backgroundColor,
+            color: theme.color,
+            outline: 'none'
+          }}
+        >
+          Toggle to {!dark ? 'Dark' : 'Light'} theme
+        </button>
+      </header>
+      <div id="todo-list">
+        <h1>ToDo List</h1>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            id='todoAdd'
+          />
+          <button type="submit">Add Todo</button>
+        </form>
         {todos.map((todo) => (
-
           <div key={todo.id} className="todo">
             <div className="todo-text">
-              {/* Add checkbox for toggle complete */}
               <input
                 type="checkbox"
                 id="completed"
                 checked={todo.completed}
                 onChange={() => toggleComplete(todo.id)}
               />
-              {/* if it is edit mode, display input box, else display text */}
               {todo.id === todoEditing ?
                 (<input
                   type="text"
-                  id = {todo.id}
+                  id={todo.id}
                   defaultValue={todo.text}
                 />) :
                 (<div>{todo.text}</div>)
               }
             </div>
             <div className="todo-actions">
-              {/* if it is edit mode, allow submit edit, else allow edit */}
               {todo.id === todoEditing ?
-              (
-                <button onClick={() => submitEdits(todo)}>Submit Edits</button>
-              ) :
-              (
-                <button onClick={() => setTodoEditing(todo.id)}>Edit</button>
-              )}
-
+                (<button onClick={() => submitEdits(todo)}>Submit Edits</button>) :
+                (<button onClick={() => setTodoEditing(todo.id)}>Edit</button>)
+              }
               <button onClick={() => deleteTodo(todo.id)}>Delete</button>
-             </div>
+            </div>
           </div>
         ))}
-        </div>
-);
+      </div>
+    </div>
+  );
 };
+
 export default App;
